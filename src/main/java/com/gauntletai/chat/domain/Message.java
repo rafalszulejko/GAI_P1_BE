@@ -16,4 +16,5 @@ class Message {
     private String senderId;
     private String content;
     private Date sentAt;
+    private String threadId;
 }

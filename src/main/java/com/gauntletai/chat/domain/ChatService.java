@@ -31,10 +31,13 @@ class ChatService {
     }
 
     Chat createChat(Chat chat, String creatorId) {
+        String chatId = java.util.UUID.randomUUID().toString();
+        chat.setId(chatId);
         Chat savedChat = chatRepository.save(chat);
         
         // Add creator as a member
         ChatMember creator = ChatMember.builder()
+                .id(java.util.UUID.randomUUID().toString())
                 .chatId(savedChat.getId())
                 .userId(creatorId)
                 .joinedAt(new Date())
