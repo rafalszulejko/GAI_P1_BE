@@ -6,21 +6,14 @@ import com.gauntletai.chat.domain.exception.EntityNotFoundException;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
 class MessageService {
     private final MessageRepository messageRepository;
-    private final ChatRepository chatRepository;
-    private final UserRepository userRepository;
 
-    MessageService(MessageRepository messageRepository,
-                  ChatRepository chatRepository,
-                  UserRepository userRepository) {
+    MessageService(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
-        this.chatRepository = chatRepository;
-        this.userRepository = userRepository;
     }
 
     List<Message> getChatMessages(String chatId) {

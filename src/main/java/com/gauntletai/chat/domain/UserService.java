@@ -59,14 +59,13 @@ public class UserService {
 
     public User getOrCreateUser(Jwt jwt) {
         String auth0Id = jwt.getSubject();
-        return userRepository.findById(auth0Id)
+        return userRepository.findByAuth0Id(auth0Id)
                 .orElseGet(() -> createNewUser(jwt));
     }
 
     private User createNewUser(Jwt jwt) {
         String email;
         try {
-            // Convert the subject to DecodedJWT or use the Management API directly with the subject
             String userId = jwt.getSubject();
             String managementApiToken = getManagementApiToken();
             ManagementAPI mgmt = new ManagementAPI(AUTH0_DOMAIN, managementApiToken);
@@ -87,6 +86,10 @@ public class UserService {
 
     public Optional<User> findById(String id) {
         return userRepository.findById(id);
+    }
+
+    public Optional<User> findByAuth0Id(String auth0Id) {
+        return userRepository.findByAuth0Id(auth0Id);
     }
 
     public User save(User user) {
