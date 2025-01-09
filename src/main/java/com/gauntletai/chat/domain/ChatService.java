@@ -48,4 +48,18 @@ class ChatService {
         return chatRepository.findById(chatId)
                 .orElseThrow(() -> new EntityNotFoundException(Chat.class, chatId));
     }
+
+    Chat updateChat(String chatId, Chat chatUpdate) {
+        if (!chatId.equals(chatUpdate.getId())) {
+            throw new IllegalArgumentException("Chat ID in path and request body must match");
+        }
+
+        Chat existingChat = getChatById(chatId);
+        
+        // Only update allowed fields
+        existingChat.setName(chatUpdate.getName());
+        existingChat.setDescription(chatUpdate.getDescription());
+        
+        return chatRepository.save(existingChat);
+    }
 } 

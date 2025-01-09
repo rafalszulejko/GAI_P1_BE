@@ -26,4 +26,9 @@ class ChatController {
     Chat getChat(@PathVariable String chatId) {
         return chatService.getChatById(chatId);
     }
+
+    @PutMapping("/{chatId}")
+    Chat updateChat(@PathVariable String chatId, @RequestBody Chat chat) {
+        return chatService.updateChat(chatId, chat);
+    }
 } 
