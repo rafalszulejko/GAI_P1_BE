@@ -13,14 +13,11 @@ import java.util.List;
 class ChatService {
     private final ChatRepository chatRepository;
     private final ChatMemberRepository chatMemberRepository;
-    private final UserRepository userRepository;
 
     ChatService(ChatRepository chatRepository, 
-               ChatMemberRepository chatMemberRepository,
-               UserRepository userRepository) {
+               ChatMemberRepository chatMemberRepository) {
         this.chatRepository = chatRepository;
         this.chatMemberRepository = chatMemberRepository;
-        this.userRepository = userRepository;
     }
 
     List<Chat> getAllChats() {

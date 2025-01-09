@@ -22,17 +22,4 @@ public class UserController {
         return userService.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(User.class, id));
     }
-
-    @PutMapping("/me/username")
-    public User updateUsername(@AuthenticationPrincipal Jwt jwt, @RequestBody UpdateUsernameRequest request) {
-        User user = userService.getOrCreateUser(jwt);
-        user.setUsername(request.getUsername());
-        return userService.save(user);
-    }
 }
-
-record UpdateUsernameRequest(String username) {
-    public String getUsername() {
-        return username;
-    }
-} 
