@@ -1,7 +1,6 @@
 package com.gauntletai.chat.domain;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.gauntletai.chat.config.SecurityUtils;
 import com.gauntletai.chat.domain.exception.EntityNotFoundException;
@@ -10,14 +9,17 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 class MessageService {
     private final MessageRepository messageRepository;
+    private final UserService userService;
 
-    MessageService(MessageRepository messageRepository) {
+    MessageService(MessageRepository messageRepository, UserService userService) {
         this.messageRepository = messageRepository;
+        this.userService = userService;
     }
 
     List<Message> getChatMessages(String chatId) {
@@ -49,4 +51,13 @@ class MessageService {
             .orElseThrow(() -> new EntityNotFoundException(Message.class, messageId));
     }
 
+    public List<MessageSearchResult> search(String searchTerm) {
+        return messageRepository.findByContentContainingIgnoreCase(searchTerm).stream()
+            .map(message -> MessageSearchResult.builder()
+                .message(message)
+                .user(userService.findById(message.getSenderId())
+                    .orElseThrow(() -> new EntityNotFoundException(User.class, message.getSenderId())))
+                .build())
+            .collect(Collectors.toList());
+    }
 } 

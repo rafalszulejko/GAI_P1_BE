@@ -13,6 +13,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -94,5 +95,9 @@ public class UserService {
 
     public User save(User user) {
         return userRepository.save(user);
+    }
+
+    public List<User> search(String searchTerm) {
+        return userRepository.findByUsernameContainingIgnoreCase(searchTerm);
     }
 } 
