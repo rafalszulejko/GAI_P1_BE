@@ -2,6 +2,9 @@ package com.gauntletai.chat.domain;
 
 import com.gauntletai.chat.domain.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Set;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
+    private final SseService sseService;
     @GetMapping("/me")
     public User getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
         return userService.getOrCreateUser(jwt);
@@ -21,5 +24,15 @@ public class UserController {
     public User getUser(@PathVariable String id) {
         return userService.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(User.class, id));
+    }
+
+    @PostMapping("/heartbeat")
+    public void heartbeat() {
+        sseService.updatePresence();
+    }
+
+    @GetMapping("/online")
+    public Set<String> getOnlineUsers() {
+        return sseService.getOnlineUsers();
     }
 }

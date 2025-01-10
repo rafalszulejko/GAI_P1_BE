@@ -16,17 +16,23 @@ import java.util.stream.Collectors;
 class MessageService {
     private final MessageRepository messageRepository;
     private final UserService userService;
+    private final SseService sseService;
 
-    MessageService(MessageRepository messageRepository, UserService userService) {
+    MessageService(MessageRepository messageRepository, UserService userService, SseService sseService) {
         this.messageRepository = messageRepository;
         this.userService = userService;
+        this.sseService = sseService;
     }
 
     List<Message> getChatMessages(String chatId) {
-        return messageRepository.findByChatIdOrderBySentAtDesc(chatId);
+        log.debug("Fetching messages for chat {}", chatId);
+        List<Message> messages = messageRepository.findByChatIdOrderBySentAtDesc(chatId);
+        log.debug("Found {} messages for chat {}", messages.size(), chatId);
+        return messages;
     }
 
     Message createMessage(Message message) {
+        log.debug("Creating new message in chat {}", message.getChatId());
         Message newMessage = Message.builder()
             .id(java.util.UUID.randomUUID().toString())
             .content(message.getContent())
@@ -34,7 +40,10 @@ class MessageService {
             .senderId(SecurityUtils.getCurrentUserId())
             .sentAt(new Date())
             .build();
-        return messageRepository.save(newMessage);
+        Message savedMessage = messageRepository.save(newMessage);
+        log.debug("Broadcasting new message {} to chat {}", savedMessage.getId(), savedMessage.getChatId());
+        sseService.broadcastToChat(savedMessage.getChatId(), "NEW_MESSAGE", savedMessage);
+        return savedMessage;
     }
 
     Message updateMessage(String messageId, Message updatedMessage) {

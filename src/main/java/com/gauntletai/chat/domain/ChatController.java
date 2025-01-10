@@ -1,15 +1,19 @@
 package com.gauntletai.chat.domain;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/chats")
 class ChatController {
     private final ChatService chatService;
+    private final SseService sseService;
 
-    ChatController(ChatService chatService) {
+    ChatController(ChatService chatService, SseService sseService) {
         this.chatService = chatService;
+        this.sseService = sseService;
     }
 
     @GetMapping
@@ -30,5 +34,10 @@ class ChatController {
     @PutMapping("/{chatId}")
     Chat updateChat(@PathVariable String chatId, @RequestBody Chat chat) {
         return chatService.updateChat(chatId, chat);
+    }
+
+    @GetMapping("/{chatId}/subscribe")
+    SseEmitter subscribeToChat(@PathVariable String chatId) {
+        return sseService.subscribeToChat(chatId);
     }
 } 
