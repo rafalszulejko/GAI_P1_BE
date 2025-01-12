@@ -1,6 +1,18 @@
 version: '3.8'
 
 services:
+  app:
+    build: .
+    container_name: chat-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+    env_file:
+      - .env
+    networks:
+      - chat-network
+
   mongodb:
     image: mongo:latest
     container_name: chat-mongodb
