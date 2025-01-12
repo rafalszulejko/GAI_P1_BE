@@ -3,8 +3,9 @@ package com.gauntletai.chat.domain;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gauntletai.chat.config.SecurityUtils;
 import com.gauntletai.chat.domain.exception.EntityNotFoundException;
+import com.gauntletai.chat.security.SecurityUtils;
+
 import java.util.Date;
 import java.util.List;
 

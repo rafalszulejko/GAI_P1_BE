@@ -4,7 +4,11 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.gauntletai.chat.s3.S3Attachment;
+
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -17,4 +21,5 @@ class Message {
     private String content;
     private Date sentAt;
     private String threadId;
+    private List<S3Attachment> attachments;
 }

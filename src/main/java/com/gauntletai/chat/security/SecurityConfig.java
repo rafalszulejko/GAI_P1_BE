@@ -1,4 +1,4 @@
-package com.gauntletai.chat.config;
+package com.gauntletai.chat.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

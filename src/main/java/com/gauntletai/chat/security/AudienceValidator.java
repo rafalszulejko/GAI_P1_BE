@@ -1,4 +1,4 @@
-package com.gauntletai.chat.config;
+package com.gauntletai.chat.security;
 
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;

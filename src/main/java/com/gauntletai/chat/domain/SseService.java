@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import com.gauntletai.chat.config.SecurityUtils;
+import com.gauntletai.chat.security.SecurityUtils;
 
 import lombok.extern.slf4j.Slf4j;
 

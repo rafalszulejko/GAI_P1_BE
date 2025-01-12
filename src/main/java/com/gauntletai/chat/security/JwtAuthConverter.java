@@ -1,4 +1,4 @@
-package com.gauntletai.chat.config;
+package com.gauntletai.chat.security;
 
 import com.gauntletai.chat.domain.User;
 import com.gauntletai.chat.domain.UserService;

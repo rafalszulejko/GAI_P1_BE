@@ -1,4 +1,4 @@
-package com.gauntletai.chat.config;
+package com.gauntletai.chat.security;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
