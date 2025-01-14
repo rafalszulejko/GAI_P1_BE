@@ -29,9 +29,7 @@ aws:
 
 app:
   cors:
-    allowed-origins:
-      - http://localhost:3000
-      - https://placeholder-ec2-address.amazonaws.com
+    allowed-origins: http://localhost:3000, https://ec2-13-51-161-185.eu-north-1.compute.amazonaws.com
 
 logging:
   level:
