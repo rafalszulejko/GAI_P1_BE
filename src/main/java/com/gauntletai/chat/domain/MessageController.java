@@ -23,7 +23,7 @@ class MessageController {
 
     @PostMapping
     Message createMessage(@RequestBody Message message) {
-        return messageService.createMessage(message);
+        return messageService.createMessage(message, false);
     }
 
     @PostMapping("/{messageId}/attachments")

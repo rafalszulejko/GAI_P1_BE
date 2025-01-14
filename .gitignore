@@ -2,3 +2,5 @@
 target/
 src/main/resources/application.properties
 .env
+venv/
+init-db.log

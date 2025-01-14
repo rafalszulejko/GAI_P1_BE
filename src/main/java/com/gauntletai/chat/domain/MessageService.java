@@ -32,17 +32,16 @@ class MessageService {
         return messages;
     }
 
-    Message createMessage(Message message) {
-        log.debug("Creating new message in chat {}", message.getChatId());
+    Message createMessage(Message message, boolean local) {
         Message newMessage = Message.builder()
             .id(java.util.UUID.randomUUID().toString())
             .content(message.getContent())
             .chatId(message.getChatId())
-            .senderId(SecurityUtils.getCurrentUserId())
+            .senderId(local ? message.getSenderId() : SecurityUtils.getCurrentUserId())
             .sentAt(new Date())
             .build();
+            
         Message savedMessage = messageRepository.save(newMessage);
-        log.debug("Broadcasting new message {} to chat {}", savedMessage.getId(), savedMessage.getChatId());
         sseService.broadcastToChat(savedMessage.getChatId(), "NEW_MESSAGE", savedMessage);
         return savedMessage;
     }

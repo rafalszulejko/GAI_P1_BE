@@ -1,9 +1,11 @@
 spring:
+  config:
+    import: optional:.env
   application:
     name: chat
   data:
     mongodb:
-      host: mongodb
+      host: ${MONGO_HOST:mongodb}
       port: 27017
       database: chat
   security:
