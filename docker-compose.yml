@@ -4,8 +4,6 @@ services:
     container_name: chat-backend
     expose:
       - "8080"
-    depends_on:
-      - mongodb
     env_file:
       - .env
     networks:
@@ -35,19 +33,6 @@ services:
     depends_on:
       - app
       - frontend
-    networks:
-      - chat-network
-
-  mongodb:
-    image: mongo:latest
-    container_name: chat-mongodb
-    ports:
-      - "27017:27017"
-    environment:
-      - MONGO_INITDB_DATABASE=chat
-    volumes:
-      - mongodb_data:/data/db
-      - ./src/main/resources/db/init-data.js:/docker-entrypoint-initdb.d/init-data.js:ro
     networks:
       - chat-network
 
