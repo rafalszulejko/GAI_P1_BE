@@ -5,15 +5,26 @@ spring:
     name: chat
   data:
     mongodb:
-      host: ${MONGO_HOST:mongodb}
-      port: 27017
-      database: chat
+      uri: ${MONGODB_ATLAS_URI}
+      database: ${MONGODB_ATLAS_DATABASE:chat}
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: ${AUTH0_ISSUER_URI}
           audiences: ${AUTH0_AUDIENCES}
+  ai:
+    openai:
+      api-key: ${OPENAI_KEY}
+    vectorstore:
+      mongodb:
+        collection-name: vector_store
+        dimension: 1536
+        metadata-fields:
+          - messageId
+          - senderId
+          - chatId
+        initialize-schema: true
 
 auth0:
   domain: ${AUTH0_DOMAIN}

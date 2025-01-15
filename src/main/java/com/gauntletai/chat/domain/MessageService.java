@@ -1,5 +1,7 @@
 package com.gauntletai.chat.domain;
 
+import org.springframework.ai.document.Document;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,7 +26,13 @@ class MessageService {
     private final UserService userService;
     private final SseService sseService;
     private final S3Service s3Service;
+    private final VectorStore vectorStore;
 
+
+    Message getMessage(String messageId) {
+        return messageRepository.findById(messageId)
+            .orElseThrow(() -> new EntityNotFoundException(Message.class, messageId));
+    }
 
     List<Message> getChatMessages(String chatId) {
         log.debug("Fetching messages for chat {}", chatId);
@@ -43,6 +52,7 @@ class MessageService {
             
         Message savedMessage = messageRepository.save(newMessage);
         sseService.broadcastToChat(savedMessage.getChatId(), "NEW_MESSAGE", savedMessage);
+        saveInVectorStore(savedMessage);
         return savedMessage;
     }
 
@@ -87,5 +97,17 @@ class MessageService {
             .findFirst()
             .orElseThrow(() -> new EntityNotFoundException(S3Attachment.class, key));
         return s3Service.getAttachment(attachment);
+    }
+
+    private void saveInVectorStore(Message message) {
+        Document doc = Document.builder()
+                .id(message.getId())
+                .text(message.getContent())
+                .metadata(Map.of(
+                        "messageId", message.getId(),
+                        "senderId", message.getSenderId(),
+                        "chatId", message.getChatId()))
+                .build();
+        vectorStore.add(List.of(doc));
     }
 } 

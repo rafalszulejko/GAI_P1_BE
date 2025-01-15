@@ -13,4 +13,5 @@ import lombok.Data;
 public class SearchResults {
     private List<MessageSearchResult> messages;
     private List<User> users;
+    private AiSearchResult ai;
 }

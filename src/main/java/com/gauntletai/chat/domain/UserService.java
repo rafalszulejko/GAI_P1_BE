@@ -58,8 +58,15 @@ public class UserService {
 
     public User getOrCreateUser(Jwt jwt) {
         String auth0Id = jwt.getSubject();
-        return userRepository.findByAuth0Id(auth0Id)
-                .orElseGet(() -> createNewUser(jwt));
+        try {
+            return userRepository.findByAuth0Id(auth0Id)
+                    .orElseGet(() -> createNewUser(jwt));
+        } catch (org.springframework.dao.DuplicateKeyException e) {
+            // If we get a duplicate key exception, another request has just created the user
+            // Try to fetch it again
+            return userRepository.findByAuth0Id(auth0Id)
+                    .orElseThrow(() -> new IllegalStateException("User was created but cannot be found"));
+        }
     }
 
     private User createNewUser(Jwt jwt) {

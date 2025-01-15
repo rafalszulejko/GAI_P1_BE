@@ -9,11 +9,12 @@ import com.gauntletai.chat.s3.S3Attachment;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
 @Document(collection = "messages")
-class Message {
+public class Message {
     @Id
     private String id;
     private String chatId;
@@ -22,4 +23,8 @@ class Message {
     private Date sentAt;
     private String threadId;
     private List<S3Attachment> attachments;
+    
+    public Map<String, Object> toMetadata() {
+        return Map.of("messageId", id, "userId", senderId, "chatId", chatId);
+    }
 }
