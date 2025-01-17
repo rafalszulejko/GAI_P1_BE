@@ -107,7 +107,13 @@ class MessageService {
         S3Attachment attachment = s3Service.uploadFile(file);
         Message message = messageRepository.findById(messageId)
             .orElseThrow(() -> new EntityNotFoundException(Message.class, messageId));
-        message.getAttachments().add(attachment);
+        List<S3Attachment> attachments = message.getAttachments();
+        if (attachments == null) {
+            attachments = List.of(attachment);
+        } else {
+            attachments.add(attachment);
+        }
+        message.setAttachments(attachments);
         messageRepository.save(message);
         return attachment;
     }
