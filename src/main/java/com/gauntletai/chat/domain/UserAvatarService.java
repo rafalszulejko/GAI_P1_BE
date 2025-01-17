@@ -40,7 +40,7 @@ public class UserAvatarService {
         User realUser = userService.findById(realUserId);
         log.info("Creating avatar for user: {}", realUser.getUsername());
 
-        User avatarUser = userService.createNewUser(String.format("avatar_%s", realUser.getUsername()), "", "");
+        User avatarUser = userService.createNewUser(realUser.getUsername(), "", "", true);
         log.info("Avatar user: {}: {}", avatarUser.getId(), avatarUser.getUsername());
 
         List<Message> messages = messageRepository.findFirst50BySenderIdOrderBySentAtDesc(realUserId);

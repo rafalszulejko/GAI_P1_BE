@@ -22,4 +22,5 @@ public class User {
     private Date createdAt;
     private Date lastActive;
     private boolean isOnline;
+    private boolean isAi;
 }

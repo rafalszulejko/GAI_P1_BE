@@ -13,5 +13,5 @@ interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findByAuth0Id(String auth0Id);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
-    List<User> findByUsernameContainingIgnoreCase(String searchTerm);
+    List<User> findByIsAiAndUsernameContainingIgnoreCase(boolean isAi, String searchTerm);
 } 

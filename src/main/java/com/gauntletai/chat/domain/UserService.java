@@ -89,10 +89,10 @@ public class UserService {
             name = email.split("@")[0];
         }
         
-        return createNewUser(name, email, jwt.getSubject());
+        return createNewUser(name, email, jwt.getSubject(), false);
     }
 
-    public User createNewUser(String name, String email,  String auth0Id) {
+    public User createNewUser(String name, String email,  String auth0Id, boolean isAi) {
         User user = User.builder()
             .id(UUID.randomUUID().toString())
             .auth0Id(auth0Id)
@@ -101,6 +101,7 @@ public class UserService {
             .createdAt(new Date())
             .lastActive(new Date())
             .isOnline(true)
+            .isAi(isAi)
             .build();
         return userRepository.save(user);    
     }
@@ -119,6 +120,6 @@ public class UserService {
     }
 
     public List<User> search(String searchTerm) {
-        return userRepository.findByUsernameContainingIgnoreCase(searchTerm);
+        return userRepository.findByIsAiAndUsernameContainingIgnoreCase(false, searchTerm);
     }
 } 
