@@ -45,16 +45,6 @@ public class UserAvatarService {
 
         List<Message> messages = messageRepository.findFirst50BySenderIdOrderBySentAtDesc(realUserId);
 
-        // BeanOutputConverter<UserStyles> userStylesConverter = new
-        // BeanOutputConverter<>(UserStyles.class);
-        // String format = userStylesConverter.getFormat();
-
-        // Generation generation = openAiChatModel.call(new
-        // Prompt(USER_STYLE_ANALYSIS_PROMPT)).getResult();
-
-        // UserStyles userStyles =
-        // userStylesConverter.convert(generation.getOutput().getContent());
-
         UserStyles userStyles = ChatClient.create(openAiChatModel).prompt()
                 .user(u -> u.text(userAnalysisPrompt(messages))).call().entity(UserStyles.class);
 
@@ -99,11 +89,11 @@ public class UserAvatarService {
                 .map(message -> userNames.get(message.getSenderId()) + ": " + message.getContent())
                 .collect(Collectors.joining("\n"));
 
-        String currentMessageString = currentMessage.getSenderId() + ": " + currentMessage.getContent();
+        String currentMessageString = humanUser.getUsername() + ": " + currentMessage.getContent();
         String avatarStyleString = avatar.getStyles().toString();
 
         String previousUserMessages = searchService
-                .vectorSearchByUser(currentMessage.getContent(), avatar.getAvatarUserId()).stream()
+                .vectorSearchByUser(currentMessage.getContent(), avatar.getRealUserId()).stream()
                 .map(Document::getText)
                 .collect(Collectors.joining("\n"));
 

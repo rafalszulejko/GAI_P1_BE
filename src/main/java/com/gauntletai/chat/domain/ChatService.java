@@ -54,6 +54,15 @@ class ChatService {
                 .userId(avatar.getAvatarUserId())
                 .joinedAt(new Date())
                 .build());
+        } else {
+            command.getMembers().forEach(member -> {
+                chatMemberRepository.save(ChatMember.builder()
+                    .id(java.util.UUID.randomUUID().toString())
+                    .chatId(savedChat.getId())
+                    .userId(member)
+                    .joinedAt(new Date())
+                    .build());
+            });
         }
         
         return savedChat;
