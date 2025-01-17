@@ -14,4 +14,5 @@ interface MessageRepository extends MongoRepository<Message, String> {
     List<Message> findBySenderIdAndChatId(String senderId, String chatId);
     List<Message> findByChatIdOrderBySentAtDesc(String chatId);
     List<Message> findByContentContainingIgnoreCase(String searchTerm);
+    List<Message> findFirst50BySenderIdOrderBySentAtDesc(String senderId);
 } 

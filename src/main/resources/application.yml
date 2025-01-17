@@ -20,7 +20,7 @@ spring:
       mongodb:
         collection-name: vector_store
         dimension: 1536
-        metadata-fields:
+        metadata-fields-to-filter:
           - messageId
           - senderId
           - chatId

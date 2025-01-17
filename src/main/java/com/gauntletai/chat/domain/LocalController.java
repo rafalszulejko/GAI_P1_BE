@@ -1,6 +1,9 @@
 package com.gauntletai.chat.domain;
 
 import org.springframework.web.bind.annotation.*;
+
+import com.gauntletai.chat.domain.dto.CreateChatCommand;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -12,8 +15,8 @@ class LocalController {
     private final MessageService messageService;
 
     @PostMapping("/chat")
-    Chat createChat(@RequestBody Chat chat) {
-        return chatService.createChat(chat);
+    Chat createChat(@RequestBody CreateChatCommand command) {
+        return chatService.createChat(command);
     }
 
     @PostMapping("/chatmember")
@@ -23,6 +26,6 @@ class LocalController {
 
     @PostMapping("/message")
     Message createMessage(@RequestBody Message message) {
-        return messageService.createMessage(message, true);
+        return messageService.createMessage(message, true, false);
     }
 } 

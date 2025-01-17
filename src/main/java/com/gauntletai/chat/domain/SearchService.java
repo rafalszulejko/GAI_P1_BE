@@ -22,20 +22,30 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class SearchService {
-    private final MessageService messageService;
     private final UserService userService;
     private final VectorStore vectorStore;
     private final OpenAiChatModel openAiChatModel;
-    private final ChatService chatService;
+    private final ChatRepository chatRepository;
+    private final MessageRepository messageRepository;
+
     public SearchResults search(SearchQuery query) {
         return SearchResults.builder()
                 .messages(query.getSearchTypes().contains(SearchType.MESSAGE)
-                        ? messageService.search(query.getQueryString())
+                        ? search(query.getQueryString())
                         : null)
                 .users(query.getSearchTypes().contains(SearchType.USER) ? userService.search(query.getQueryString())
                         : null)
                 .ai(query.getSearchTypes().contains(SearchType.AI) ? prepareAiSearch(query) : null)
                 .build();
+    }
+
+    public List<MessageSearchResult> search(String searchTerm) {
+        return messageRepository.findByContentContainingIgnoreCase(searchTerm).stream()
+            .map(message -> MessageSearchResult.builder()
+                .message(message)
+                .user(userService.findById(message.getSenderId()))
+                .build())
+            .collect(Collectors.toList());
     }
 
     private AiSearchResult prepareAiSearch(SearchQuery query) {
@@ -65,12 +75,12 @@ public class SearchService {
                         .build());
     }
 
-    private List<Document> vectorSearchInUser(String query, String userId) {
+    public List<Document> vectorSearchByUser(String query, String userId) {
         return vectorStore.similaritySearch(
                 SearchRequest.builder()
                         .query(query)
                         .similarityThreshold(0.5)
-                        .filterExpression("userId == '" + userId + "'")
+                        .filterExpression("senderId == '" + userId + "'")
                         .build());
     }
 
@@ -88,12 +98,10 @@ public class SearchService {
                 .collect(Collectors.groupingBy(document -> (String) document.getMetadata().get("chatId")));
 
         messagesByChat.forEach((chatId, chatMessages) -> {
-            prompt.append("Chat: ").append(chatService.getChatById(chatId).getName()).append("\n");
+            prompt.append("Chat: ").append(chatRepository.findNameById(chatId).orElse("Unknown chat")).append("\n");
             chatMessages.forEach(message -> {
                 String username = userNames.computeIfAbsent((String) message.getMetadata().get("senderId"),
-                        userId -> userService.findById(userId)
-                                .map(User::getUsername)
-                                .orElse("Unknown User"));
+                        userId -> userService.findById(userId).getUsername());
                 prompt.append(String.format("%s: %s\n", username, message.getText()));
             });
             prompt.append("\n\n");

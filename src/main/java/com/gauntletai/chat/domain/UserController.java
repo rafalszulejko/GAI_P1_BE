@@ -22,8 +22,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User getUser(@PathVariable String id) {
-        return userService.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(User.class, id));
+        return userService.findById(id);
     }
 
     @PostMapping("/heartbeat")

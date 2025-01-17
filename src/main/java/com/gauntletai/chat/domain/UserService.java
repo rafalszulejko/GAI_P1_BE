@@ -9,11 +9,14 @@ import com.auth0.client.mgmt.ManagementAPI;
 import com.auth0.exception.Auth0Exception;
 import com.auth0.json.auth.TokenHolder;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.gauntletai.chat.domain.exception.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -86,12 +89,25 @@ public class UserService {
             name = email.split("@")[0];
         }
         
-        User newUser = User.createFromAuth0(jwt.getSubject(), email, name);
-        return userRepository.save(newUser);
+        return createNewUser(name, email, jwt.getSubject());
     }
 
-    public Optional<User> findById(String id) {
-        return userRepository.findById(id);
+    public User createNewUser(String name, String email,  String auth0Id) {
+        User user = User.builder()
+            .id(UUID.randomUUID().toString())
+            .auth0Id(auth0Id)
+            .email(email)
+            .username(name)
+            .createdAt(new Date())
+            .lastActive(new Date())
+            .isOnline(true)
+            .build();
+        return userRepository.save(user);    
+    }
+
+    public User findById(String id) {
+        return userRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(User.class, id));
     }
 
     public Optional<User> findByAuth0Id(String auth0Id) {

@@ -3,6 +3,8 @@ package com.gauntletai.chat.domain;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import com.gauntletai.chat.domain.dto.CreateChatCommand;
+
 import java.util.List;
 
 @RestController
@@ -22,8 +24,8 @@ class ChatController {
     }
 
     @PostMapping
-    Chat createChat(@RequestBody Chat chat) {
-        return chatService.createChat(chat);
+    Chat createChat(@RequestBody CreateChatCommand command) {
+        return chatService.createChat(command);
     }
 
     @GetMapping("/{chatId}")

@@ -8,7 +8,8 @@ import com.gauntletai.chat.s3.S3Attachment;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/api/messages")
@@ -17,13 +18,13 @@ class MessageController {
     private final MessageService messageService;
 
     @GetMapping("/chat/{chatId}")
-    List<Message> getChatMessages(@PathVariable String chatId) {
-        return messageService.getChatMessages(chatId);
+    Page<Message> getChatMessages(@PathVariable String chatId, Pageable pageable) {
+        return messageService.getChatMessages(chatId, pageable);
     }
 
     @PostMapping
     Message createMessage(@RequestBody Message message) {
-        return messageService.createMessage(message, false);
+        return messageService.createMessage(message, false, false);
     }
 
     @PostMapping("/{messageId}/attachments")
