@@ -33,6 +33,11 @@ class ChatController {
         return chatService.getChatById(chatId);
     }
 
+    @GetMapping("/{chatId}/otheruser")
+    String getOtherUser(@PathVariable String chatId) {
+        return chatService.getOtherUser(chatId);
+    }
+
     @PutMapping("/{chatId}")
     Chat updateChat(@PathVariable String chatId, @RequestBody Chat chat) {
         return chatService.updateChat(chatId, chat);

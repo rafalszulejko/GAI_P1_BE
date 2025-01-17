@@ -78,6 +78,12 @@ class ChatService {
         return chatRepository.save(existingChat);
     }
 
+    public String getOtherUser(String chatId) {
+        Chat chat = getChatById(chatId);
+        String senderId = SecurityUtils.getCurrentUserId();
+        return getOtherUser(chat, senderId);
+    }
+
     public String getOtherUser(Chat chat, String senderId) {
         log.info("Getting other user for chat: {}:{} that is not {}", chat.getId(), chat.getName(), senderId);
         if (chat.getType().equals(ChatType.DIRECT) || chat.getType().equals(ChatType.AI)) {
